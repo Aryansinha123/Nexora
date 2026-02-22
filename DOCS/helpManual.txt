@@ -1,0 +1,40 @@
+npm install mongoose jsonwebtoken bcryptjs axios
+
+
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OThmMzI0ZDY1OWRlYTNhY2NlNWVkZGYiLCJyb2xlIjoidXNlciIsImlhdCI6MTc3MDk5MjMxOCwiZXhwIjoxNzcxNTk3MTE4fQ.FFqz89LucSlssZJNYCfqEIWf6hZbnIAncFKGHMyaHzw
+
+
+🧪 How To Test Protected Route
+1️⃣ First login → copy token
+2️⃣ Send GET request:
+http://localhost:3000/api/protected
+
+3️⃣ Add Header:
+Authorization: Bearer YOUR_TOKEN_HERE
+
+✅ Expected Output
+{
+  "message": "Protected route accessed",
+  "user": {
+    "userId": "...",
+    "role": "user",
+    "iat": ...,
+    "exp": ...
+  }
+}
+
+
+
+
+http://localhost:3000/api/auth/login
+body 
+{
+  "email": "aryan@test.com",
+  "password": "123456"
+}
+copy token
+
+
+http://localhost:3000/api/products
+Authorization Bearer thatToken
+body - product json
