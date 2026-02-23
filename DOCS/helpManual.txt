@@ -38,3 +38,28 @@ copy token
 http://localhost:3000/api/products
 Authorization Bearer thatToken
 body - product json
+
+
+
+
+product id -GET
+699b3e5fd94baa501f69e03c
+
+
+view      → 1 point
+cart      → 3 points
+purchase  → 5 points
+
+
+
+user 2-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTljODZiNTNjNDQ1NjgyMjRmOWM0ZTgiLCJyb2xlIjoidXNlciIsImlhdCI6MTc3MTg2NTgzNiwiZXhwIjoxNzcyNDcwNjM2fQ.RddlXiVV1OGxGAu3DxR3Jm3qeiZilTmrq4WwVzhxuvk
+
+
+
+
+
+| User Type   | Result          |
+| ----------- | --------------- |
+| New user    | Trending        |
+| Active user | Personalized    |
+| Cold-start  | No empty screen |
