@@ -1,22 +1,45 @@
 import { connectDB } from "@/lib/mongodb";
-import { verifyToken } from "@/lib/authMiddleware";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 import Order from "@/models/Order";
 import Product from "@/models/Product";
 
-export async function GET(req) {
+export const runtime = "nodejs";
+
+export async function GET() {
   try {
     await connectDB();
 
-    const auth = verifyToken(req);
-    if (auth.error) {
-      return new Response(JSON.stringify({ error: auth.error }), { status: 401 });
+    // ✅ Proper way to read cookie in App Router
+    const cookieStore =await cookies();
+    const token = cookieStore.get("adminToken")?.value;
+
+    if (!token) {
+      return new Response(JSON.stringify({ error: "No token provided" }), {
+        status: 401,
+      });
     }
 
-    if (auth.user.role !== "admin") {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
+    let decoded;
+
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+      });
     }
 
-    // 1️⃣ Total Revenue
+    if (decoded.role !== "admin") {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 403,
+      });
+    }
+
+    // ===============================
+    // YOUR REAL DATA LOGIC (UNCHANGED)
+    // ===============================
+
     const revenueData = await Order.aggregate([
       {
         $group: {
@@ -27,7 +50,6 @@ export async function GET(req) {
       },
     ]);
 
-    // 2️⃣ Revenue Per Day
     const revenuePerDay = await Order.aggregate([
       {
         $group: {
@@ -43,7 +65,6 @@ export async function GET(req) {
       { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 } },
     ]);
 
-    // 3️⃣ Top Selling Products
     const topProducts = await Order.aggregate([
       { $unwind: "$items" },
       {
@@ -78,16 +99,26 @@ export async function GET(req) {
       { $sort: { totalSold: -1 } },
     ]);
 
+    const mlResponse = await fetch("http://localhost:8000/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: revenuePerDay }),
+    });
+
+    const prediction = await mlResponse.json();
+
     return new Response(
       JSON.stringify({
         overview: revenueData[0] || { totalRevenue: 0, totalOrders: 0 },
         revenuePerDay,
         topProducts,
+        prediction,
       }),
       { status: 200 }
     );
-
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+    });
   }
 }

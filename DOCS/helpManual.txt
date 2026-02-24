@@ -63,3 +63,8 @@ user 2-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTljODZiNTNjNDQ1Njgy
 | New user    | Trending        |
 | Active user | Personalized    |
 | Cold-start  | No empty screen |
+
+
+cd ml-service
+.venv\Scripts\activate
+python -m uvicorn main:app --reload --port 8000
