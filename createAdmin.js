@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import User from "./models/User";   // 🔥 RELATIVE PATH
 
 // 🔥 Paste your MongoDB URI directly here temporarily
-const MONGO_URI = "mongodb+srv://sinhaaryan173_db_user:6OTebo38xVwIPbxI@cluster-main.dsf6tym.mongodb.net/nexora?retryWrites=true&w=majority";
+const MONGO_URI = process.env.MONGODB_URI;
 
 async function createAdmin() {
   try {

@@ -5,7 +5,6 @@ export function middleware(req) {
   const { pathname } = req.nextUrl;
 
   const token = req.cookies.get("adminToken")?.value;
-console.log("Token in middleware:", token);//temp
   // Allow access to the admin login page, but if already authenticated redirect to dashboard
   if (pathname.startsWith("/admin/login")) {
     if (!token) {
